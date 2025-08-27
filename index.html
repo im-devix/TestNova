@@ -1,321 +1,38 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TestNova | Quiz Platform</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <!-- Home Page -->
-        <div id="homePage" class="page active">
-            <div class="hero-bg"></div>
-            <div class="home-container">
-                <div class="logo-container">
-                    <div class="logo">
-                        <i class="fas fa-trophy"></i>
-                        <span>TestNova</span>
-                    </div>
-                    <p class="tagline">The ultimate platform for creating and taking interactive quizzes</p>
-                </div>
-                
-                <div class="cta-section">
-                    <h3 class="cta-title">Ready to Create Your Quiz?</h3>
-                    <p class="cta-desc">Upload your quiz JSON file or try our sample quiz to get started</p>
-                    
-                    <div class="action-buttons">
-                        <button class="btn" id="createQuizBtn">
-                            <i class="fas fa-plus"></i> Create Quiz
-                        </button>
-                        <button class="btn btn-secondary" id="trySampleBtn">
-                            <i class="fas fa-star"></i> Try Sample
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="features">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-bolt"></i>
-                        </div>
-                        <h3 class="feature-title">Quick Setup</h3>
-                        <p class="feature-desc">Create and share quizzes in minutes with our simple JSON format.</p>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <h3 class="feature-title">Advanced Analytics</h3>
-                        <p class="feature-desc">Get detailed insights with beautiful charts and performance metrics.</p>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-graduation-cap"></i>
-                        </div>
-                        <h3 class="feature-title">Learning Focused</h3>
-                        <p class="feature-desc">Detailed explanations help users understand concepts, not just answers.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Upload Page -->
-        <div id="uploadPage" class="page">
-            <div class="logo-container">
-                <div class="logo">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <span>Upload Quiz</span>
-                </div>
-                <p class="tagline">Upload your quiz JSON file or use our sample to get started</p>
-            </div>
-            
-            <div class="upload-container">
-                <div class="file-upload" id="dropZone">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>Drag & drop your quiz file</p>
-                    <p><small>or click to browse</small></p>
-                </div>
-                <input type="file" id="fileInput" accept=".json" class="file-input">
-            </div>
-            
-            <div class="btn-container">
-                <button class="btn btn-secondary" id="useSampleBtn">
-                    <i class="fas fa-star"></i> Try Sample Quiz
-                </button>
-                
-                <div class="toggle-json" id="toggleJson">
-                    <span>Show JSON Format</span>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                
-                <div class="json-example" id="jsonExample">
-                    <pre>{
-  "title": "General Knowledge Quiz",
-  "description": "Test your knowledge with these questions",
-  "timeLimit": 5, // in minutes (optional)
-  "questions": [
-    {
-      "question": "What is the capital of France?",
-      "options": ["London", "Paris", "Berlin", "Madrid"],
-      "correctAnswer": 1, // index of correct option (0-based)
-      "explanation": "Paris has been the capital of France since the 5th century."
-    },
-    {
-      "question": "Which planet is known as the Red Planet?",
-      "options": ["Venus", "Mars", "Jupiter", "Saturn"],
-      "correctAnswer": 1,
-      "explanation": "Mars appears red due to iron oxide on its surface."
-    }
-  ]
-}</pre>
-                </div>
-                
-                <div class="share-section" id="shareSection">
-                    <h4 class="share-title"><i class="fas fa-share-alt"></i> Share This Quiz</h4>
-                    <div class="share-input-container">
-                        <input type="text" class="share-input" id="shareLinkInput" readonly>
-                        <button class="share-btn" id="copyLinkBtn">
-                            <i class="fas fa-copy"></i> Copy
-                        </button>
-                    </div>
-                    <div class="share-options">
-                        <div class="share-option facebook" title="Share on Facebook">
-                            <i class="fab fa-facebook-f"></i>
-                        </div>
-                        <div class="share-option twitter" title="Share on Twitter">
-                            <i class="fab fa-twitter"></i>
-                        </div>
-                        <div class="share-option whatsapp" title="Share on WhatsApp">
-                            <i class="fab fa-whatsapp"></i>
-                        </div>
-                        <div class="share-option email" title="Share via Email">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Quiz Preview Modal -->
-        <div class="modal" id="quizPreviewModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <i class="fas fa-file-alt"></i>
-                    <h2>Quiz Details</h2>
-                </div>
-                <div class="quiz-info" id="quizInfo"></div>
-                <div class="modal-actions">
-                    <button class="btn btn-outline" id="cancelQuizBtn">
-                        <i class="fas fa-times"></i> Cancel
-                    </button>
-                    <button class="btn" id="startQuizBtn">
-                        <i class="fas fa-play"></i> Start Quiz
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Quiz Page -->
-        <div id="quizPage" class="page">
-            <div class="quiz-header">
-                <div class="quiz-title" id="quizTitleHeader">Quiz Title</div>
-                <div class="quiz-controls">
-                    <div class="timer" id="timer">
-                        <i class="fas fa-clock"></i> <span>00:00</span>
-                    </div>
-                    <div id="questionCount">1/10</div>
-                </div>
-            </div>
-            
-            <div class="progress-container">
-                <div class="progress-bar" id="progressBar"></div>
-            </div>
-            
-            <div class="question-container">
-                <div class="question-text" id="questionText"></div>
-                
-                <div class="options-container" id="optionsContainer"></div>
-            </div>
-            
-            <div class="navigation">
-                <button class="btn btn-outline" id="prevQuestionBtn">
-                    <i class="fas fa-arrow-left"></i> Back
-                </button>
-                <button class="btn" id="nextQuestionBtn">
-                    Next <i class="fas fa-arrow-right"></i>
-                </button>
-            </div>
-        </div>
-        
-        <!-- Solution Page -->
-        <div id="solutionPage" class="page">
-            <div class="quiz-header">
-                <div class="quiz-title" id="solutionTitleHeader">Quiz Solutions</div>
-                <div class="quiz-controls">
-                    <div class="timer">
-                        <i class="fas fa-check-circle"></i> <span id="solutionScore">0/0</span>
-                    </div>
-                    <div id="solutionQuestionCount">1/10</div>
-                </div>
-            </div>
-            
-            <div class="progress-container">
-                <div class="progress-bar" id="solutionProgressBar"></div>
-            </div>
-            
-            <div class="question-container">
-                <div class="question-text" id="solutionQuestionText"></div>
-                
-                <div class="options-container" id="solutionOptionsContainer"></div>
-                
-                <div class="solution-explanation" id="solutionExplanation">
-                    <h4><i class="fas fa-lightbulb"></i> Explanation</h4>
-                    <p id="explanationText">Loading explanation...</p>
-                </div>
-            </div>
-            
-            <div class="navigation">
-                <button class="btn btn-outline" id="prevSolutionBtn">
-                    <i class="fas fa-arrow-left"></i> Previous
-                </button>
-                <button class="btn" id="nextSolutionBtn">
-                    Next <i class="fas fa-arrow-right"></i>
-                </button>
-            </div>
-        </div>
-        
-        <!-- Results Page -->
-        <div id="resultPage" class="page">
-            <div class="result-header">
-                <h1><i class="fas fa-trophy"></i> Quiz Results</h1>
-                <p id="quizTitleResult">General Knowledge</p>
-            </div>
-            
-            <div class="result-content">
-                <div class="score-container">
-                    <div class="score-circle" id="scoreCircle">
-                        <div class="score-inner">
-                            <div class="score-percent" id="scorePercent">0%</div>
-                            <div class="score-text">Overall Score</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="stats">
-                    <div class="stat correct">
-                        <div class="stat-value" id="correctCount">0</div>
-                        <div class="stat-label">Correct Answers</div>
-                    </div>
-                    <div class="stat incorrect">
-                        <div class="stat-value" id="incorrectCount">0</div>
-                        <div class="stat-label">Incorrect Answers</div>
-                    </div>
-                    <div class="stat unattempted">
-                        <div class="stat-value" id="unattemptedCount">0</div>
-                        <div class="stat-label">Unattempted</div>
-                    </div>
-                </div>
-                
-                <div class="performance-summary">
-                    <h3 class="review-title"><i class="fas fa-chart-pie"></i> Performance Summary</h3>
-                    
-                    <div class="summary-grid">
-                        <div class="summary-item">
-                            <div class="summary-icon correct">
-                                <i class="fas fa-check"></i>
-                            </div>
-                            <div class="summary-details">
-                                <h4>Accuracy</h4>
-                                <p id="accuracyRate">0%</p>
-                            </div>
-                        </div>
-                        
-                        <div class="summary-item">
-                            <div class="summary-icon time">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div class="summary-details">
-                                <h4>Average Time</h4>
-                                <p id="avgTime">0s</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="charts-section">
-                    <h3 class="review-title"><i class="fas fa-chart-bar"></i> Performance Analysis</h3>
-                    
-                    <div class="chart-container">
-                        <canvas id="performanceChart"></canvas>
-                    </div>
-                </div>
-                
-                <div class="result-actions">
-                    <button class="btn" id="viewSolutionsBtn">
-                        <i class="fas fa-book-open"></i> View Solutions
-                    </button>
-                    <button class="btn btn-secondary" id="shareResultsBtn">
-                        <i class="fas fa-share-alt"></i> Share Results
-                    </button>
-                    <button class="btn btn-accent" id="printResultsBtn">
-                        <i class="fas fa-file-pdf"></i> Export PDF
-                    </button>
-                    <button class="btn btn-outline" id="backToHomeBtn">
-                        <i class="fas fa-home"></i> Back to Home
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuizMaster Pro - Create Amazing Quiz Experiences</title>
+    <meta name="description" content="Build interactive quizzes that engage, educate, and inspire. Perfect for educators, trainers, and knowledge enthusiasts." />
+    
+    <!-- Preload fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    
+    <!-- Theme color -->
+    <meta name="theme-color" content="#4f46e5">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="QuizMaster Pro - Create Amazing Quiz Experiences">
+    <meta property="og:description" content="Build interactive quizzes that engage, educate, and inspire. Perfect for educators, trainers, and knowledge enthusiasts.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://quizmaster-pro.vercel.app">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="QuizMaster Pro - Create Amazing Quiz Experiences">
+    <meta name="twitter:description" content="Build interactive quizzes that engage, educate, and inspire. Perfect for educators, trainers, and knowledge enthusiasts.">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
